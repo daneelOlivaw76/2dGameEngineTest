@@ -24,7 +24,9 @@ namespace GameEngine.Source
         public Color windowColor = Color.Black;
 
         // window renderer
-        public static RenderWindow app;
+        public static RenderWindow? app;
+
+        private static readonly string CLASS_NAME = "GameEngine";
 
         public Engine(uint WIDTH, uint HEIGHT, string TITLE, Color WINDOWCOLOR)
         {
@@ -45,15 +47,16 @@ namespace GameEngine.Source
 
         private void App_Resized(object? sender, SizeEventArgs e)
         {
-            RenderWindow window = (RenderWindow)sender;
+            RenderWindow? window = (RenderWindow?)sender;
             FloatRect visibleArea = new FloatRect(0, 0, e.Width, e.Height);
-            window.SetView(new View(visibleArea));
+            if(window != null)
+            window?.SetView(new View(visibleArea));
         }
 
         private void App_Closed(object? sender, EventArgs e)
         {
-            RenderWindow window = (RenderWindow)sender;
-            window.Close();
+            RenderWindow? window = (RenderWindow?)sender;
+            window?.Close();
         }
 
         private void App_KeyReleased(object? sender, KeyEventArgs e)
@@ -70,14 +73,17 @@ namespace GameEngine.Source
         {
             OnLoad();
 
-            while (app.IsOpen)
+            if (app != null)
             {
-                app.DispatchEvents();
-                app.Clear(windowColor);
+                while (app.IsOpen)
+                {
+                    app.DispatchEvents();
+                    app.Clear(windowColor);
 
-                OnUpdate();
+                    OnUpdate();
 
-                app.Display();
+                    app.Display();
+                }
             }
         }
 
@@ -88,16 +94,16 @@ namespace GameEngine.Source
             RectangleShape shape = new RectangleShape(new Vector2f(50, 50));
             shape.FillColor = Color.White;
             shape.Position = new Vector2(400, 400);
-            app.Draw(shape);
+            app?.Draw(shape);
 
             if (Input.ActionJustPressed("Down"))
             {
-                Console.WriteLine("Key just pressed");
+                Log.Info(CLASS_NAME, "Key just pressed");
             }
 
             if (Input.ActionPressed("Up"))
             {
-                Console.WriteLine("Key Pressed");
+                Log.Info(CLASS_NAME, "Key Pressed");
             }
         }
     }

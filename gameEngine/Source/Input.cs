@@ -5,8 +5,7 @@ namespace GameEngine.Source
     static internal class Input
     {
         // Inputs
-        public static Dictionary<string, InputAction> AllInputActions =
-            new Dictionary<string, InputAction>();
+        public static Dictionary<string, InputAction> AllInputActions = [];
 
         // add Input actions here
         public static InputAction a1 = new InputAction("Left", Keyboard.Key.A, Keyboard.Key.Left);
@@ -14,14 +13,16 @@ namespace GameEngine.Source
         public static InputAction a3 = new InputAction("Up", Keyboard.Key.W, Keyboard.Key.Up);
         public static InputAction a4 = new InputAction("Down", Keyboard.Key.S, Keyboard.Key.Down);
 
+        private static readonly string CLASS_NAME = "Input";
+
         public static bool ActionPressed(string actionName)
         {
-            if (AllInputActions.ContainsKey(actionName))
+            if (AllInputActions.TryGetValue(actionName, out InputAction? value))
             {
-                return AllInputActions[actionName].Pressing;
+                return value.Pressing;
             }
 
-            Log.Error($"Action {actionName} not found!");
+            Log.Error(CLASS_NAME, $"Action {actionName} not found!");
             return false;
         }
 
@@ -37,7 +38,7 @@ namespace GameEngine.Source
             }
             else
             {
-                Log.Error($"Action {actionName} not found!");
+                Log.Error(CLASS_NAME, $"Action {actionName} not found!");
             }
 
             return false;
