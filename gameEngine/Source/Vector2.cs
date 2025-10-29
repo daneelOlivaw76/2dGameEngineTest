@@ -1,6 +1,6 @@
 namespace GameEngine.Source
 {
-    internal class Vector2
+    public class Vector2
     {
         public float x { get; set; }
         public float y { get; set; }

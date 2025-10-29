@@ -13,6 +13,7 @@ namespace GameEngine.Source
 {
     abstract class Engine
     {
+        public static readonly string CLASS_NAME = "Engine";
         // Height and Width
         public uint height = 500;
         public uint width = 500;
@@ -30,8 +31,6 @@ namespace GameEngine.Source
         public static List<GameObject> GameObjects = [];
         public static List<GameObject> GameObjectsToAdd = [];
         public static List<GameObject> GameObjectsToRemove = [];
-
-        private static readonly string CLASS_NAME = "GameEngine";
 
         public Engine(uint WIDTH, uint HEIGHT, string TITLE, Color WINDOWCOLOR)
         {
@@ -85,12 +84,12 @@ namespace GameEngine.Source
             Input.GetKeyDown(e);
         }
 
-        private static void RegisterGameObject(GameObject gameObject)
+        public static void RegisterGameObject(GameObject gameObject)
         {
             GameObjectsToAdd.Add(gameObject);
         }
 
-        private static void UnRegisterGameObject(GameObject gameObject)
+        public static void UnRegisterGameObject(GameObject gameObject)
         {
             GameObjectsToRemove.Add(gameObject);
         }
@@ -116,33 +115,16 @@ namespace GameEngine.Source
             }
         }
 
-        private static void UpdateObjects()
+        private void UpdateObjects()
         {
-            foreach(GameObject gameObject in GameObjectsToRemove)
+            for ( int i = 0; i < GameObjects.Count; i++)
             {
-                GameObjects.Remove(gameObject);
+                GameObjects[i].OnUpdate();
+                GameObjects[i].UpdateChildren();
             }
-        }
+            
 
-        private static void LoadObjects()
-        {
-            if (GameObjects != null)
-            {
-                return;
-            }
-
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-            if (GameObjects.Count > 0)
-            {
-                for ( int i = 0; i < GameObjects.Count; i++)
-                {
-                    GameObjects[i].OnUpdate();
-                    GameObjects[i].UpdateChildren();
-                }
-            }
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-
-            if (GameObjectsToAdd != null && GameObjectsToAdd.Count > 0)
+            if (GameObjectsToAdd.Count > 0)
             {
                 for (int i = 0; i < GameObjectsToAdd.Count; i++)
                 {
@@ -153,7 +135,7 @@ namespace GameEngine.Source
                 GameObjectsToAdd.Clear();
             }
 
-            if(GameObjectsToRemove != null && GameObjectsToRemove.Count > 0)
+            if(GameObjectsToRemove.Count > 0)
             {
                 for (int i = 0; i > GameObjectsToRemove.Count; i++)
                 {
@@ -162,6 +144,14 @@ namespace GameEngine.Source
                 }
 
                 GameObjectsToRemove.Clear();
+            }
+        }
+        
+        public void LoadObjects()
+        {
+            foreach(GameObject gameObject in GameObjects)
+            {
+                gameObject.OnLoad();
             }
         }
 
@@ -174,15 +164,15 @@ namespace GameEngine.Source
             shape.Position = new Vector2(400, 400);
             app?.Draw(shape);
 
-            if (Input.ActionJustPressed("Down"))
-            {
-                Log.Info(CLASS_NAME, "Key just pressed");
-            }
+            // if (Input.ActionJustPressed("Right"))
+            // {
+            //     Log.Info(CLASS_NAME, "Key just pressed");
+            // }
 
-            if (Input.ActionPressed("Up"))
-            {
-                Log.Info(CLASS_NAME, "Key Pressed");
-            }
+            // if (Input.ActionPressed("Left"))
+            // {
+            //     Log.Info(CLASS_NAME, "Key Pressed");
+            // }
         }
     }
 }

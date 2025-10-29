@@ -1,14 +1,17 @@
+using System.Numerics;
+
 namespace GameEngine.Source
 {
-    internal abstract class GameObject
+    public abstract class GameObject
     {
+        private static readonly string CLASS_NAME = "GameObject";
         abstract public Vector2 Position { get; set; }
         abstract public Vector2 Origin { get; set; }
         abstract public Vector2 Scale { get; set; }
         abstract public string Tag { get; set; }
         abstract public List<GameObject> Children { get; set; }
 
-        private static readonly string CLASS_NAME = "GameObject";
+        
 
         public GameObject()
         {
@@ -17,7 +20,17 @@ namespace GameEngine.Source
             Origin = Position;
             Scale = new Vector2();
             Tag = "EmptyGameObject";
+            Engine.RegisterGameObject(this);
+        }
 
+        public GameObject(Vector2 position, Vector2 scale, string tag)
+        {
+            Children = [];
+            Position = position;
+            Origin = position;
+            Scale = scale;
+            Tag = tag;
+            Engine.RegisterGameObject(this);
         }
 
         public virtual void AddChild(GameObject child)
@@ -28,14 +41,17 @@ namespace GameEngine.Source
         public virtual void DestroyChild(GameObject child)
         {
             Children.Remove(child);
+            child.DestroySelf();
         }
 
         public virtual void DestroySelf()
         {
+            Engine.UnRegisterGameObject(this);
+
             if (Children == null) { return; }
             foreach (GameObject child in Children)
             {
-                DestroyChild(child);
+                child.DestroySelf();
             }
         }
 

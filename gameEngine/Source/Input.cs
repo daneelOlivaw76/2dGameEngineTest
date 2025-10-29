@@ -17,9 +17,9 @@ namespace GameEngine.Source
 
         public static bool ActionPressed(string actionName)
         {
-            if (AllInputActions.TryGetValue(actionName, out InputAction? value))
+            if (AllInputActions.ContainsKey(actionName))
             {
-                return value.Pressing;
+                return AllInputActions[actionName].Pressing;
             }
 
             Log.Error(CLASS_NAME, $"Action {actionName} not found!");
@@ -63,7 +63,6 @@ namespace GameEngine.Source
                 if (action.Key == e.Code || (action.SecKey != Keyboard.Key.Unknown && action.SecKey == e.Code))
                 {
                     action.Pressing = true;
-                    action.Pressed = false;
                 }
             }
         }
