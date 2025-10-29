@@ -26,6 +26,11 @@ namespace GameEngine.Source
         // window renderer
         public static RenderWindow? app;
 
+        // GameObjects
+        public static List<GameObject> GameObjects = [];
+        public static List<GameObject> GameObjectsToAdd = [];
+        public static List<GameObject> GameObjectsToRemove = [];
+
         private static readonly string CLASS_NAME = "GameEngine";
 
         public Engine(uint WIDTH, uint HEIGHT, string TITLE, Color WINDOWCOLOR)
@@ -49,14 +54,25 @@ namespace GameEngine.Source
         {
             RenderWindow? window = (RenderWindow?)sender;
             FloatRect visibleArea = new FloatRect(0, 0, e.Width, e.Height);
-            if(window != null)
-            window?.SetView(new View(visibleArea));
+            if (window != null)
+            {
+                window?.SetView(new View(visibleArea));
+            } else
+            {
+                Log.Error(CLASS_NAME, "Window Object is null!");
+            }
         }
 
         private void App_Closed(object? sender, EventArgs e)
         {
             RenderWindow? window = (RenderWindow?)sender;
-            window?.Close();
+            if (window != null)
+            {
+                window?.Close();
+            } else
+            {
+                Log.Error(CLASS_NAME, "Window Object is null!");
+            }            
         }
 
         private void App_KeyReleased(object? sender, KeyEventArgs e)
@@ -69,8 +85,20 @@ namespace GameEngine.Source
             Input.GetKeyDown(e);
         }
 
+        private static void RegisterGameObject(GameObject gameObject)
+        {
+            GameObjectsToAdd.Add(gameObject);
+        }
+
+        private static void UnRegisterGameObject(GameObject gameObject)
+        {
+            GameObjectsToRemove.Add(gameObject);
+        }
+
         void GameLoop()
         {
+            LoadObjects();
+            
             OnLoad();
 
             if (app != null)
@@ -80,10 +108,60 @@ namespace GameEngine.Source
                     app.DispatchEvents();
                     app.Clear(windowColor);
 
+                    UpdateObjects();
                     OnUpdate();
 
                     app.Display();
                 }
+            }
+        }
+
+        private static void UpdateObjects()
+        {
+            foreach(GameObject gameObject in GameObjectsToRemove)
+            {
+                GameObjects.Remove(gameObject);
+            }
+        }
+
+        private static void LoadObjects()
+        {
+            if (GameObjects != null)
+            {
+                return;
+            }
+
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            if (GameObjects.Count > 0)
+            {
+                for ( int i = 0; i < GameObjects.Count; i++)
+                {
+                    GameObjects[i].OnUpdate();
+                    GameObjects[i].UpdateChildren();
+                }
+            }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
+            if (GameObjectsToAdd != null && GameObjectsToAdd.Count > 0)
+            {
+                for (int i = 0; i < GameObjectsToAdd.Count; i++)
+                {
+                    GameObjectsToAdd[i].OnLoad();
+                    GameObjects.Add(GameObjectsToAdd[i]);
+                }
+
+                GameObjectsToAdd.Clear();
+            }
+
+            if(GameObjectsToRemove != null && GameObjectsToRemove.Count > 0)
+            {
+                for (int i = 0; i > GameObjectsToRemove.Count; i++)
+                {
+                    GameObjectsToRemove[i].OnDestroy();
+                    GameObjects.Remove(GameObjectsToRemove[i]);
+                }
+
+                GameObjectsToRemove.Clear();
             }
         }
 
