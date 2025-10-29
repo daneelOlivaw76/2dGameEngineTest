@@ -13,38 +13,38 @@ namespace GameEngine.Source
 {
     abstract class Engine
     {
-        public static readonly string CLASS_NAME = "Engine";
+        private const string ClassName = "Engine";
         // Height and Width
-        public uint height = 500;
+        private uint height = 500;
         public uint width = 500;
 
         //window title
-        public string title = "Zenva Engine 0.0.1";
+        private string title = "Zenva Engine 0.0.1";
 
         // window color
-        public Color windowColor = Color.Black;
+        private Color windowColor = Color.Black;
 
         // window renderer
-        public static RenderWindow? app;
+        private static RenderWindow? App;
 
         // GameObjects
-        public static List<GameObject> GameObjects = [];
-        public static List<GameObject> GameObjectsToAdd = [];
-        public static List<GameObject> GameObjectsToRemove = [];
+        private static List<GameObject> GameObjects = [];
+        private static List<GameObject> GameObjectsToAdd = [];
+        private static List<GameObject> GameObjectsToRemove = [];
 
-        public Engine(uint WIDTH, uint HEIGHT, string TITLE, Color WINDOWCOLOR)
+        protected Engine(uint WIDTH, uint HEIGHT, string TITLE, Color WINDOWCOLOR)
         {
             this.width = WIDTH;
             this.height = HEIGHT;
             this.title = TITLE;
             this.windowColor = WINDOWCOLOR;
 
-            app = new RenderWindow(new VideoMode(width, height), title, style: Styles.Resize | Styles.Close);
-            app.KeyPressed += App_KeyPressed;
-            app.KeyReleased += App_KeyReleased;
-            app.Closed += App_Closed;
-            app.Resized += App_Resized;
-            app.SetFramerateLimit(100);
+            App = new RenderWindow(new VideoMode(width, height), title, style: Styles.Resize | Styles.Close);
+            App.KeyPressed += App_KeyPressed;
+            App.KeyReleased += App_KeyReleased;
+            App.Closed += App_Closed;
+            App.Resized += App_Resized;
+            App.SetFramerateLimit(100);
 
             GameLoop();
         }
@@ -58,7 +58,7 @@ namespace GameEngine.Source
                 window?.SetView(new View(visibleArea));
             } else
             {
-                Log.Error(CLASS_NAME, "Window Object is null!");
+                Log.Error(ClassName, "Window Object is null!");
             }
         }
 
@@ -70,7 +70,7 @@ namespace GameEngine.Source
                 window?.Close();
             } else
             {
-                Log.Error(CLASS_NAME, "Window Object is null!");
+                Log.Error(ClassName, "Window Object is null!");
             }            
         }
 
@@ -100,17 +100,17 @@ namespace GameEngine.Source
             
             OnLoad();
 
-            if (app != null)
+            if (App != null)
             {
-                while (app.IsOpen)
+                while (App.IsOpen)
                 {
-                    app.DispatchEvents();
-                    app.Clear(windowColor);
+                    App.DispatchEvents();
+                    App.Clear(windowColor);
 
                     UpdateObjects();
                     OnUpdate();
 
-                    app.Display();
+                    App.Display();
                 }
             }
         }
@@ -147,7 +147,7 @@ namespace GameEngine.Source
             }
         }
         
-        public void LoadObjects()
+        private void LoadObjects()
         {
             foreach(GameObject gameObject in GameObjects)
             {
@@ -162,7 +162,7 @@ namespace GameEngine.Source
             RectangleShape shape = new RectangleShape(new Vector2f(50, 50));
             shape.FillColor = Color.White;
             shape.Position = new Vector2(400, 400);
-            app?.Draw(shape);
+            App?.Draw(shape);
 
             // if (Input.ActionJustPressed("Right"))
             // {

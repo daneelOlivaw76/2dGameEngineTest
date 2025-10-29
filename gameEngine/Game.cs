@@ -6,7 +6,7 @@ namespace GameEngine
 {
     internal class Game : Engine
     {
-        private static new readonly string CLASS_NAME = "Game";
+        private const string ClassName = "Game";
         public Game() : base((uint)800, (uint)800, "Engine Test", Color.Black) {  }
 
         Player player = new Player(new Vector2(), new Vector2(), "player");
@@ -18,7 +18,7 @@ namespace GameEngine
         
         public override void OnUpdate()
         {
-            Log.Info(CLASS_NAME, $"Player's Position: {player.Position.x} | {player.Position.y}");
+            Log.Info(ClassName, $"Player's Position: {player.Position.x} | {player.Position.y}");
 
             base.OnUpdate();
         }
