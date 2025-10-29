@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using GameEngine.Source;
 using SFML.Graphics;
+using SFML.System;
 using SFML.Window;
 
-namespace GameEngine
+namespace GameEngine.Source
 {
-    internal class Engine
+    abstract class Engine
     {
         // Height and Width
         public uint height = 500;
@@ -42,31 +45,59 @@ namespace GameEngine
 
         private void App_Resized(object? sender, SizeEventArgs e)
         {
-            throw new NotImplementedException();
+            RenderWindow window = (RenderWindow)sender;
+            FloatRect visibleArea = new FloatRect(0, 0, e.Width, e.Height);
+            window.SetView(new View(visibleArea));
         }
 
         private void App_Closed(object? sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            RenderWindow window = (RenderWindow)sender;
+            window.Close();
         }
 
         private void App_KeyReleased(object? sender, KeyEventArgs e)
         {
-            throw new NotImplementedException();
+            Input.GetKeyUp(e);
         }
 
         private void App_KeyPressed(object? sender, KeyEventArgs e)
         {
-            throw new NotImplementedException();
+            Input.GetKeyDown(e);
         }
 
         void GameLoop()
         {
+            OnLoad();
+
             while (app.IsOpen)
             {
                 app.DispatchEvents();
                 app.Clear(windowColor);
+
+                OnUpdate();
+
                 app.Display();
+            }
+        }
+
+        public abstract void OnLoad();
+
+        public virtual void OnUpdate()
+        {
+            RectangleShape shape = new RectangleShape(new Vector2f(50, 50));
+            shape.FillColor = Color.White;
+            shape.Position = new Vector2(400, 400);
+            app.Draw(shape);
+
+            if (Input.ActionJustPressed("Down"))
+            {
+                Console.WriteLine("Key just pressed");
+            }
+
+            if (Input.ActionPressed("Up"))
+            {
+                Console.WriteLine("Key Pressed");
             }
         }
     }

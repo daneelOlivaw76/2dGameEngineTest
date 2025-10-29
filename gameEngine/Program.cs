@@ -1,7 +1,4 @@
-﻿
-
-
-namespace GameEngine
+﻿namespace GameEngine
 {
     static class Program
     {

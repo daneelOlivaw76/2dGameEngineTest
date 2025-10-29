@@ -196,3 +196,4 @@
 /Users/ruireis/program/code/zenva/zenva_game_engine/gameEngine/bin/Debug/net9.0/runtimes/win-x86/native/openal32.dll
 /Users/ruireis/program/code/zenva/zenva_game_engine/gameEngine/obj/Debug/net9.0/gameEngine.csproj.AssemblyReference.cache
 /Users/ruireis/program/code/zenva/zenva_game_engine/gameEngine/obj/Debug/net9.0/gameEngine.csproj.Up2Date
+/Users/ruireis/program/code/zenva/zenva_game_engine/gameEngine/obj/Debug/net9.0/gameEngine.sourcelink.json
